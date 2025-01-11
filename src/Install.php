@@ -9,7 +9,7 @@ class Install
      * @var array
      */
     protected static $pathRelation = [
-        'config/thinkcache.php' => 'config/thinkcache.php'
+        'config/think-cache.php' => 'config/think-cache.php'
     ];
 
     /**
@@ -18,17 +18,6 @@ class Install
      */
     public static function install()
     {
-        $config_file = config_path() . '/bootstrap.php';
-        $config = include $config_file;
-        if(!in_array(ThinkCache::class, $config ?? [])) {
-            $config_file_content = file_get_contents($config_file);
-            $config_file_content = preg_replace('/\];/', "    Webman\ThinkCache\ThinkCache::class,\n];", $config_file_content);
-            file_put_contents($config_file, $config_file_content);
-        }
-        /*$thinkcache_file = config_path() . '/thinkcache.php';
-        if (!is_file($thinkcache_file)) {
-            copy(__DIR__ . '/config/thinkcache.php', $thinkcache_file);
-        }*/
         static::installByRelation();
     }
 
@@ -38,14 +27,6 @@ class Install
      */
     public static function uninstall()
     {
-        $config_file = config_path() . '/bootstrap.php';
-        $config = include $config_file;
-        if(in_array(ThinkCache::class, $config ?? [])) {
-            $config_file = config_path() . '/bootstrap.php';
-            $config_file_content = file_get_contents($config_file);
-            $config_file_content = preg_replace('/ {0,4}Webman\\\\ThinkCache\\\\ThinkCache::class,?\r?\n?/', '', $config_file_content);
-            file_put_contents($config_file, $config_file_content);
-        }
         self::uninstallByRelation();
     }
 
@@ -62,7 +43,6 @@ class Install
                     mkdir($parent_dir, 0777, true);
                 }
             }
-            //symlink(__DIR__ . "/$source", base_path()."/$dest");
             copy_dir(__DIR__ . "/$source", base_path()."/$dest");
             echo "Create $dest
 ";
@@ -89,5 +69,5 @@ class Install
             remove_dir($path);
         }
     }
-    
+
 }
