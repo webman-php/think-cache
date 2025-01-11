@@ -142,11 +142,11 @@ abstract class Manager
         $class = $this->resolveClass($type);
 
         if (strtolower($type) === 'redis') {
-            $key = "think-cache.connections.$name";
+            $key = "think-cache.stores.$name";
             $connection = Context::get($key);
             if (!$connection) {
                 if (!isset(static::$pools[$name])) {
-                    $poolConfig = $params['pool'] ?? [];
+                    $poolConfig = $params[0]['pool'] ?? [];
                     $pool = new Pool($poolConfig['max_connections'] ?? 10, $poolConfig);
                     $pool->setConnectionCreator(function () use ($class, $params) {
                         return (new Container())->invokeClass($class, $params);
