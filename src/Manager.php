@@ -17,7 +17,8 @@ use ReflectionException;
 use think\helper\Str;
 use Throwable;
 use Webman\Context;
-use Webman\Coroutine\Pool;
+use Workerman\Coroutine\Coroutine;
+use Workerman\Coroutine\Pool;
 
 abstract class Manager
 {
@@ -163,7 +164,7 @@ abstract class Manager
                     $connection = static::$pools[$name]->get();
                     Context::set($key, $connection);
                 } finally {
-                    Context::onDestroy(function () use ($connection, $name) {
+                    Coroutine::defer(function () use ($connection, $name) {
                         try {
                             $connection && static::$pools[$name]->put($connection);
                         } catch (Throwable) {

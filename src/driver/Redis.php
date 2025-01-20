@@ -16,7 +16,7 @@ use BadFunctionCallException;
 use DateInterval;
 use DateTimeInterface;
 use RedisException;
-use Webman\Coroutine\Pool;
+use Workerman\Coroutine\Pool;
 use Webman\ThinkCache\Driver;
 
 class Redis extends Driver
