@@ -18,6 +18,7 @@ use think\helper\Str;
 use Throwable;
 use Webman\Context;
 use Workerman\Coroutine\Pool;
+use think\Container;
 
 abstract class Manager
 {
@@ -45,7 +46,7 @@ abstract class Manager
      * @return mixed
      * @throws ReflectionException
      */
-    protected function driver(string $name = null): mixed
+    protected function driver(string $name = ''): mixed
     {
         $name = $name ?: $this->getDefaultDriver();
 
@@ -149,7 +150,7 @@ abstract class Manager
                     $poolConfig = $params[0]['pool'] ?? [];
                     $pool = new Pool($poolConfig['max_connections'] ?? 10, $poolConfig);
                     $pool->setConnectionCreator(function () use ($class, $params) {
-                        return (new Container())->invokeClass($class, $params);
+                        return Container::getInstance()->invokeClass($class, $params);
                     });
                     $pool->setConnectionCloser(function ($connection) {
                         $connection->close();
@@ -173,7 +174,7 @@ abstract class Manager
                 }
             }
         } else {
-            $connection = (new Container())->invokeClass($class, $params);
+            $connection = Container::getInstance()->invokeClass($class, $params);
         }
 
         return $connection;
@@ -185,9 +186,9 @@ abstract class Manager
      * @param array|string|null $name
      * @return $this
      */
-    public function forgetDriver(array|string|null $name = null): static
+    public function forgetDriver(array|string|null $name = ''): static
     {
-        $name = $name ?? $this->getDefaultDriver();
+        $name = $name ?: $this->getDefaultDriver();
 
         foreach ((array) $name as $cacheName) {
             if (isset($this->drivers[$cacheName])) {
