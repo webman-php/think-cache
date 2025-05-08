@@ -47,9 +47,9 @@ class CacheManager extends Manager implements CacheInterface
      * @param mixed|null $default 默认值
      * @return mixed
      */
-    public function getConfig(string $name = null, mixed $default = null): mixed
+    public function getConfig(string $name = '', mixed $default = null): mixed
     {
-        if (!is_null($name)) {
+        if ($name) {
             return config("think-cache.$name", $default);
         }
 
@@ -63,10 +63,10 @@ class CacheManager extends Manager implements CacheInterface
      * @param mixed|null $default
      * @return mixed
      */
-    public function getStoreConfig(string $store, string $name = null, mixed $default = null): mixed
+    public function getStoreConfig(string $store, string $name = '', mixed $default = null): mixed
     {
         if ($config = $this->getConfig("stores.{$store}")) {
-            return Arr::get($config, $name, $default);
+            return $name ? Arr::get($config, $name, $default) : $config;
         }
 
         throw new \InvalidArgumentException("Store [$store] not found.");
@@ -97,7 +97,7 @@ class CacheManager extends Manager implements CacheInterface
      * @return Driver
      * @throws ReflectionException
      */
-    public function store(string $name = null): Driver
+    public function store(string $name = ''): Driver
     {
         return $this->driver($name);
     }
