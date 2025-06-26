@@ -43,6 +43,13 @@ class Redis extends Driver
     ];
 
     /**
+     * 关闭时回调函数
+     *
+     * @var \Closure[]
+     */
+    protected $onClose = [];
+
+    /**
      * 架构函数
      * @access public
      * @param array $options 缓存参数
@@ -256,5 +263,23 @@ class Redis extends Driver
             $this->handler->quit();
         }
         $this->handler = null;
+
+        if (count($this->onClose)) {
+            foreach ($this->onClose as $fun) {
+                $fun->call($this, $this);
+            }
+        }
+    }
+
+    /**
+     * 添加连接关闭的回调方法
+     * 
+     * @param \Closure $callback
+     * @return $this
+     */
+    public function onClose($callback)
+    {
+        $this->onClose[] = $callback;
+        return $this;
     }
 }
