@@ -10,6 +10,10 @@ return [
             'type' => 'redis',
             // 服务器地址
             'host' => '127.0.0.1',
+            // 无 ACL 用户请留空 username（Redis 6.0 起支持用户名 + 密码认证）
+            'username' => '',
+            // redis密码
+            'password' => '',
             // 缓存前缀
             'prefix' => 'cache:',
             // 默认缓存有效期 0表示永久缓存

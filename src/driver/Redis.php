@@ -32,6 +32,7 @@ class Redis extends Driver
     protected $options = [
         'host'       => '127.0.0.1',
         'port'       => 6379,
+        'username'   => '',
         'password'   => '',
         'select'     => 0,
         'timeout'    => 0,
@@ -58,7 +59,11 @@ class Redis extends Driver
             $this->handler = new \Redis;
             $this->handler->connect($this->options['host'], (int) $this->options['port'], (int) $this->options['timeout']);
             if ('' != $this->options['password']) {
-                $this->handler->auth($this->options['password']);
+                if ('' != $this->options['username']) {
+                    $this->handler->auth([$this->options['username'], $this->options['password']]);
+                } else {
+                    $this->handler->auth($this->options['password']);
+                }
             }
         } elseif (class_exists('\Predis\Client')) {
             $params = [];
@@ -70,6 +75,9 @@ class Redis extends Driver
             }
             if ('' == $this->options['password']) {
                 unset($this->options['password']);
+            }
+            if ('' == $this->options['username']) {
+                unset($this->options['username']);
             }
             $this->handler = new \Predis\Client($this->options, $params);
             $this->options['prefix'] = '';
