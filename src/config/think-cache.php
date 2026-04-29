@@ -14,6 +14,8 @@ return [
             'username' => '',
             // redis密码
             'password' => '',
+            // 选择的数据库索引
+            'select' => 0,
             // 缓存前缀
             'prefix' => 'cache:',
             // 默认缓存有效期 0表示永久缓存
